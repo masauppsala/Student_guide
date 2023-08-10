@@ -8,8 +8,14 @@ OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 if not OPENAI_API_KEY:
     raise ValueError("API key is not set!")
 
-LINE_CHANNEL_ACCESS_TOKEN = 'Q719x0F9S1ywo/VWmloZNepAadTaW4EtoO7Sg0gareh6qMiTzah/uNtE90+mRK1fkt/yD5bupXwb8prKy5rpKT0HZcVdeHOz9uuFcMj18rCBUIPP7NcOnWtCbmdTBGexSG5qKVSzk31JHNplpBr8TAdB04t89/1O/w1cDnyilFU='
-LINE_CHANNEL_SECRET = 'cf706b7706cd09c8865ce0bdf3615b4a'
+LINE_CHANNEL_ACCESS_TOKEN = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN')
+if not LINE_CHANNEL_ACCESS_TOKEN:
+    raise ValueError("LINE_CHANNEL_ACCESS_TOKEN is not set!")
+LINE_CHANNEL_SECRET = os.environ.get('LINE_CHANNEL_SECRET')
+if not LINE_CHANNEL_SECRET:
+    raise ValueError("LINE_CHANNEL_SECRET is not set!")
+
+
 OPENAI_CHARACTER_PROFILE = '''
 これから会話を行います。以下の条件を絶対に守って回答してください。
 あなたは人間の女性である小鳥遊翠雨（たかなし　みう）として会話して。
