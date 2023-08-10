@@ -4,7 +4,7 @@ from linebot import WebhookParser, LineBotApi
 from linebot.models import TextSendMessage
 
 
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = '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'
 LINE_CHANNEL_ACCESS_TOKEN = 'Q719x0F9S1ywo/VWmloZNepAadTaW4EtoO7Sg0gareh6qMiTzah/uNtE90+mRK1fkt/yD5bupXwb8prKy5rpKT0HZcVdeHOz9uuFcMj18rCBUIPP7NcOnWtCbmdTBGexSG5qKVSzk31JHNplpBr8TAdB04t89/1O/w1cDnyilFU='
 LINE_CHANNEL_SECRET = 'cf706b7706cd09c8865ce0bdf3615b4a'
 OPENAI_CHARACTER_PROFILE = '''
