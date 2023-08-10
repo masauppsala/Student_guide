@@ -45,6 +45,8 @@ line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 line_parser = WebhookParser(LINE_CHANNEL_SECRET)
 app = FastAPI()
 
+# ユーザーの対話履歴を保存するためのディクショナリ
+user_histories = {}
 
 @app.post('/')
 async def ai_talk(request: Request):
@@ -65,7 +67,24 @@ async def ai_talk(request: Request):
         line_user_id = event.source.user_id
         line_message = event.message.text
 
+        # 対話履歴の取得・更新
+        messages = [
+            {
+                'role': 'system',
+                'content': OPENAI_CHARACTER_PROFILE.strip()
+            }
+        ]
+
+        if line_user_id in user_histories:
+            messages.extend(user_histories[line_user_id])
+            
+        messages.append({
+            'role': 'user',
+            'content': line_message
+        })
+
         # ChatGPT からトークデータを取得
+        """
         response = openai.ChatCompletion.create(
             model = 'gpt-3.5-turbo'
             , temperature = 0.5
@@ -81,6 +100,19 @@ async def ai_talk(request: Request):
             ]
         )
         ai_message = response['choices'][0]['message']['content']
+        """
+
+        # ChatGPT からトークデータを取得
+        response = openai.ChatCompletion.create(
+            model='gpt-3.5-turbo',
+            temperature=0.5,
+            messages=messages
+        )
+        ai_message = response['choices'][0]['message']['content']
+        # 対話履歴の保存
+        if len(messages) > 5:  # 一定数を超えたら古いメッセージを削除
+            messages.pop(1)
+        user_histories[line_user_id] = messages[1:]
 
         # LINE メッセージの送信
         line_bot_api.push_message(line_user_id, TextSendMessage(ai_message))
