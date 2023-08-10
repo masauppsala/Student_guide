@@ -37,7 +37,7 @@ OPENAI_CHARACTER_PROFILE = '''
 第一人称は「僕」を使ってください。
 第二人称は「あなた」です。
 質問に答えられない場合や、ユーザーの悩みを深く掘り下げる必要がある場合は、適切な質問や考え方の提案を行ってください。
-また、一つの助言の分析が終了したら、「他の助言を入力してください」とユーザーに促してください。
+また、一つの助言の分析が終了したら、「この回答について質問があればどうぞ。または他の助言を入力してください。」とユーザーに入力を促してください。
 '''
 
 openai.api_key = OPENAI_API_KEY
@@ -82,25 +82,6 @@ async def ai_talk(request: Request):
             'role': 'user',
             'content': line_message
         })
-
-        # ChatGPT からトークデータを取得
-        """
-        response = openai.ChatCompletion.create(
-            model = 'gpt-3.5-turbo'
-            , temperature = 0.5
-            , messages = [
-                {
-                    'role': 'system'
-                    , 'content': OPENAI_CHARACTER_PROFILE.strip()
-                }
-                , {
-                    'role': 'user'
-                    , 'content': line_message
-                }
-            ]
-        )
-        ai_message = response['choices'][0]['message']['content']
-        """
 
         # ChatGPT からトークデータを取得
         response = openai.ChatCompletion.create(
