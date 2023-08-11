@@ -3,6 +3,7 @@ import openai
 from linebot import WebhookParser, LineBotApi
 from linebot.models import TextSendMessage
 import os
+import random
 
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 if not OPENAI_API_KEY:
@@ -39,6 +40,12 @@ app = FastAPI()
 # ユーザーの対話履歴を保存するためのディクショナリ
 user_histories = {}
 
+KOTOBAZU = [
+    "昔の言い伝えには、'石の上にも三年'と言うじゃろう。辛抱強く続けることが大切じゃ。",
+    "昔から言うじゃろう、'七転び八起き'。失敗は成功の元じゃ。",
+    "わしの時代にはよく言ったもんじゃ、'果報は寝て待て'。焦らず、時を待つことも大切じゃよ。"
+]
+
 @app.post('/')
 async def ai_talk(request: Request):
     signature = request.headers.get('X-Line-Signature', '')
@@ -64,12 +71,31 @@ def process_line_event(event):
     
     try:
         ai_message = get_openai_response(messages)
+
     except Exception as e:
         return f"エラー: {str(e)}"
 
+    ai_message = interpret_emoji(ai_message)  # 絵文字を解釈
+    ai_message = insert_kotobazu(ai_message)  # ことわざや古い話を挟む
+    
     update_user_history(line_user_id, messages)
 
     return ai_message
+
+def interpret_emoji(message):
+    # サンプルとして、絵文字の一部を解釈して返答を加工する
+    if "😀" in message:
+        return message + " あなたは楽しそうにしているね。"
+    elif "😢" in message:
+        return message + " 何か悲しいことがあったのか？"
+    else:
+        return message
+
+def insert_kotobazu(message):
+    # ある確率でことわざや古い話を返答に挟む
+    if random.random() < 0.2:  # 20%の確率でことわざを挟む
+        message += " " + random.choice(KOTOBAZU)
+    return message
 
 def build_openai_messages(line_user_id, line_message):
     # 共通のキャラクタープロフィール
